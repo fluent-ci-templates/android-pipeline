@@ -1,0 +1,10 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "jdk@17.0.7+7": {
+      "last_modified": "2023-06-29T16:20:38Z",
+      "resolved": "github:NixOS/nixpkgs/3c614fbc76fc152f3e1bc4b2263da6d90adf80fb#jdk17",
+      "version": "17.0.7+7"
+    }
+  }
+}
