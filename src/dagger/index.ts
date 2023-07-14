@@ -1,4 +1,19 @@
 import pipeline from "./pipeline.ts";
-import { lintDebug, assembleDebug, debugTests } from "./jobs.ts";
+import {
+  lintDebug,
+  assembleDebug,
+  debugTests,
+  bundleRelease,
+  assembleRelease,
+  withAndroidSdk,
+} from "./jobs.ts";
 
-export { pipeline, lintDebug, assembleDebug, debugTests };
+export {
+  pipeline,
+  lintDebug,
+  assembleDebug,
+  debugTests,
+  bundleRelease,
+  assembleRelease,
+  withAndroidSdk,
+};

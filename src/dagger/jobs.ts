@@ -1,23 +1,71 @@
-import Client from "@dagger.io/dagger";
+import Client, { Container } from "@dagger.io/dagger";
+import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.3.3/src/dagger/steps.ts";
+
+export const withAndroidSdk = (ctr: Container) =>
+  ctr
+    .withEnvVariable("ANDROID_HOME", "/root/android-sdk")
+    .withExec([
+      "sh",
+      "-c",
+      "mkdir -p $ANDROID_HOME && wget --output-document=$ANDROID_HOME/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip",
+    ])
+    .withExec([
+      "sh",
+      "-c",
+      "cd $ANDROID_HOME && rm -rf cmdline-tools && unzip -d cmdline-tools cmdline-tools.zip && mv cmdline-tools/cmdline-tools cmdline-tools/latest",
+    ])
+    .withEnvVariable("PATH", "$PATH:$ANDROID_HOME/cmdline-tools/latest/bin", {
+      expand: true,
+    })
+    .withExec(["sdkmanager", "--version"])
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["sdkmanager", "platforms;android-33"]);
 
 export const lintDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
-  const ctr = client
-    .pipeline("lintDebug")
-    .container()
-    .from("openjdk:11-jdk")
+
+  const baseCtr = withDevbox(
+    withAndroidSdk(
+      client
+        .pipeline("lintDebug")
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec([
+          "apk",
+          "add",
+          "bash",
+          "curl",
+          "openjdk11",
+          "wget",
+          "unzip",
+          "git",
+          "libstdc++",
+          "zlib",
+          "gcompat",
+        ])
+        .withMountedCache(
+          "/root/android-sdk",
+          client.cacheVolume("android-sdk")
+        )
+    )
+  );
+
+  const ctr = baseCtr
+    .withMountedCache("/nix", client.cacheVolume("nix"))
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("root-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
-    .withDirectory("/app", context, { exclude: ["build"] })
+    .withDirectory("/app", context, {
+      exclude: ["build", ".gradle", "app/build"],
+    })
+
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
-      "./gradlew",
-      "-Pci",
-      "--console=plain",
-      ":app:lintDebug",
-      "-PbuildDir=lint",
+      "sh",
+      "-c",
+      "eval $(devbox shell --print-env) && ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
     ]);
 
   const result = await ctr.stdout();
@@ -27,17 +75,154 @@ export const lintDebug = async (client: Client, src = ".") => {
 
 export const assembleDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
-  const ctr = client
-    .pipeline("assembleDebug")
-    .container()
-    .from("openjdk:11-jdk")
+
+  const baseCtr = withDevbox(
+    withAndroidSdk(
+      client
+        .pipeline("assembleDebug")
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec([
+          "apk",
+          "add",
+          "bash",
+          "curl",
+          "openjdk11",
+          "wget",
+          "unzip",
+          "git",
+          "libstdc++",
+          "zlib",
+          "gcompat",
+        ])
+        .withMountedCache(
+          "/root/android-sdk",
+          client.cacheVolume("android-sdk")
+        )
+    )
+  );
+
+  const ctr = baseCtr
+    .withMountedCache("/nix", client.cacheVolume("nix"))
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("root-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
-    .withDirectory("/app", context, { exclude: ["build"] })
+    .withDirectory("/app", context, {
+      exclude: ["build", ".gradle", "app/build"],
+    })
+
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["./gradlew", "assembleDebug"]);
+    .withExec([
+      "sh",
+      "-c",
+      "eval $(devbox shell --print-env) && ./gradlew assembleDebug",
+    ]);
+
+  const result = await ctr.stdout();
+
+  console.log(result);
+};
+
+export const assembleRelease = async (client: Client, src = ".") => {
+  const context = client.host().directory(src);
+
+  const baseCtr = withDevbox(
+    withAndroidSdk(
+      client
+        .pipeline("assembleRelease")
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec([
+          "apk",
+          "add",
+          "bash",
+          "curl",
+          "openjdk11",
+          "wget",
+          "unzip",
+          "git",
+          "libstdc++",
+          "zlib",
+          "gcompat",
+        ])
+        .withMountedCache(
+          "/root/android-sdk",
+          client.cacheVolume("android-sdk")
+        )
+    )
+  );
+
+  const ctr = baseCtr
+    .withMountedCache("/nix", client.cacheVolume("nix"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withDirectory("/app", context, {
+      exclude: ["build", ".gradle", "app/build"],
+    })
+
+    .withWorkdir("/app")
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec([
+      "sh",
+      "-c",
+      "eval $(devbox shell --print-env) && ./gradlew assembleRelease",
+    ]);
+
+  const result = await ctr.stdout();
+
+  console.log(result);
+};
+
+export const bundleRelease = async (client: Client, src = ".") => {
+  const context = client.host().directory(src);
+
+  const baseCtr = withDevbox(
+    withAndroidSdk(
+      client
+        .pipeline("bundleRelease")
+        .container()
+        .from("alpine:latest")
+        .withEnvVariable("ANDROID_HOME", "/root/android-sdk")
+        .withExec(["apk", "update"])
+        .withExec([
+          "apk",
+          "add",
+          "bash",
+          "curl",
+          "openjdk11",
+          "wget",
+          "unzip",
+          "git",
+          "libstdc++",
+          "zlib",
+          "gcompat",
+        ])
+        .withMountedCache(
+          "/root/android-sdk",
+          client.cacheVolume("android-sdk")
+        )
+    )
+  );
+
+  const ctr = baseCtr
+    .withMountedCache("/nix", client.cacheVolume("nix"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withDirectory("/app", context, {
+      exclude: ["build", ".gradle", "app/build"],
+    })
+    .withWorkdir("/app")
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec([
+      "sh",
+      "-c",
+      "eval $(devbox shell --print-env) && ./gradlew bundleRelease",
+    ]);
 
   const result = await ctr.stdout();
 
@@ -46,17 +231,49 @@ export const assembleDebug = async (client: Client, src = ".") => {
 
 export const debugTests = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
-  const ctr = client
-    .pipeline("debugTests")
-    .container()
-    .from("openjdk:11-jdk")
+
+  const baseCtr = withDevbox(
+    withAndroidSdk(
+      client
+        .pipeline("debugTests")
+        .container()
+        .from("alpine:latest")
+        .withExec(["apk", "update"])
+        .withExec([
+          "apk",
+          "add",
+          "bash",
+          "curl",
+          "openjdk11",
+          "wget",
+          "unzip",
+          "git",
+          "libstdc++",
+          "zlib",
+          "gcompat",
+        ])
+        .withMountedCache(
+          "/root/android-sdk",
+          client.cacheVolume("android-sdk")
+        )
+    )
+  );
+
+  const ctr = baseCtr
+    .withMountedCache("/nix", client.cacheVolume("nix"))
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("root-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
-    .withDirectory("/app", context, { exclude: ["build"] })
+    .withDirectory("/app", context, {
+      exclude: ["build", ".gradle", "app/build"],
+    })
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["./gradlew", "-Pci", "--console=plain", ":app:testDebug"]);
+    .withExec([
+      "sh",
+      "-c",
+      "eval $(devbox shell --print-env) && ./gradlew -Pci --console=plain :app:testDebug",
+    ]);
 
   const result = await ctr.stdout();
 
