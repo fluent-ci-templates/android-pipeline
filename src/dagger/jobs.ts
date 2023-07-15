@@ -18,8 +18,8 @@ export const withAndroidSdk = (ctr: Container) =>
       expand: true,
     })
     .withExec(["sdkmanager", "--version"])
-    .withExec(["sdkmanager", "platforms;android-33"]);
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["sdkmanager", "platforms;android-33"])
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"]);
 
 export const lintDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
@@ -46,9 +46,9 @@ export const lintDebug = async (client: Client, src = ".") => {
         ])
         .withMountedCache(
           "/root/android-sdk",
-          client.cacheVolume("android-sdk")
-        )
-    )
+          client.cacheVolume("android-sdk"),
+        ),
+    ),
   );
 
   const ctr = baseCtr
@@ -59,7 +59,6 @@ export const lintDebug = async (client: Client, src = ".") => {
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
-
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
@@ -98,9 +97,9 @@ export const assembleDebug = async (client: Client, src = ".") => {
         ])
         .withMountedCache(
           "/root/android-sdk",
-          client.cacheVolume("android-sdk")
-        )
-    )
+          client.cacheVolume("android-sdk"),
+        ),
+    ),
   );
 
   const ctr = baseCtr
@@ -111,7 +110,6 @@ export const assembleDebug = async (client: Client, src = ".") => {
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
-
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
@@ -150,9 +148,9 @@ export const assembleRelease = async (client: Client, src = ".") => {
         ])
         .withMountedCache(
           "/root/android-sdk",
-          client.cacheVolume("android-sdk")
-        )
-    )
+          client.cacheVolume("android-sdk"),
+        ),
+    ),
   );
 
   const ctr = baseCtr
@@ -163,7 +161,6 @@ export const assembleRelease = async (client: Client, src = ".") => {
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
-
     .withWorkdir("/app")
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
@@ -203,9 +200,9 @@ export const bundleRelease = async (client: Client, src = ".") => {
         ])
         .withMountedCache(
           "/root/android-sdk",
-          client.cacheVolume("android-sdk")
-        )
-    )
+          client.cacheVolume("android-sdk"),
+        ),
+    ),
   );
 
   const ctr = baseCtr
@@ -254,9 +251,9 @@ export const debugTests = async (client: Client, src = ".") => {
         ])
         .withMountedCache(
           "/root/android-sdk",
-          client.cacheVolume("android-sdk")
-        )
-    )
+          client.cacheVolume("android-sdk"),
+        ),
+    ),
   );
 
   const ctr = baseCtr

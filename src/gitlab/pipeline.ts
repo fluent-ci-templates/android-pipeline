@@ -29,7 +29,7 @@ const gitlabci = new GitlabCI()
     sdkmanager "platform-tools"
     sdkmanager "build-tools;\${ANDROID_BUILD_TOOLS}"
     chmod +x ./gradlew
-  `
+  `,
   )
   .comment("Basic android and gradle stuff")
   .comment("Check linting")

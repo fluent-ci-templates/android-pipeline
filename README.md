@@ -6,7 +6,6 @@
 
 A ready-to-use GitLab CI Pipeline and Jobs for your Android projects.
 
-
 ## 🚀 Usage
 
 Quick start:
@@ -130,7 +129,8 @@ debugTests:
 ## 🧪 Advanced Usage
 
 This package also provides a ready-to-use pipeline for
-[Dagger](https://dagger.io/), just run the following command on your Android project:
+[Dagger](https://dagger.io/), just run the following command on your Android
+project:
 
 ```sh
 dagger run deno run -A https://deno.land/x/android_pipeline/ci.ts

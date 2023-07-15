@@ -1,4 +1,4 @@
 import pipeline from "./pipeline.ts";
-import { lintDebug, assembleDebug, debugTests } from "./jobs.ts";
+import { assembleDebug, debugTests, lintDebug } from "./jobs.ts";
 
-export { pipeline, lintDebug, assembleDebug, debugTests };
+export { assembleDebug, debugTests, lintDebug, pipeline };
