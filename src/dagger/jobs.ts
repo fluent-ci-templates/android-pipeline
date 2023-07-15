@@ -44,11 +44,7 @@ export const lintDebug = async (client: Client, src = ".") => {
           "zlib",
           "gcompat",
         ])
-        .withMountedCache(
-          "/root/android-sdk",
-          client.cacheVolume("android-sdk"),
-        ),
-    ),
+    )
   );
 
   const ctr = baseCtr
@@ -56,6 +52,18 @@ export const lintDebug = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      client.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      client.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      client.cacheVolume("sdk-build-tools")
+    )
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
@@ -95,11 +103,7 @@ export const assembleDebug = async (client: Client, src = ".") => {
           "zlib",
           "gcompat",
         ])
-        .withMountedCache(
-          "/root/android-sdk",
-          client.cacheVolume("android-sdk"),
-        ),
-    ),
+    )
   );
 
   const ctr = baseCtr
@@ -107,6 +111,18 @@ export const assembleDebug = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      client.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      client.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      client.cacheVolume("sdk-build-tools")
+    )
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
@@ -146,11 +162,7 @@ export const assembleRelease = async (client: Client, src = ".") => {
           "zlib",
           "gcompat",
         ])
-        .withMountedCache(
-          "/root/android-sdk",
-          client.cacheVolume("android-sdk"),
-        ),
-    ),
+    )
   );
 
   const ctr = baseCtr
@@ -158,6 +170,18 @@ export const assembleRelease = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      client.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      client.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      client.cacheVolume("sdk-build-tools")
+    )
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
@@ -198,11 +222,7 @@ export const bundleRelease = async (client: Client, src = ".") => {
           "zlib",
           "gcompat",
         ])
-        .withMountedCache(
-          "/root/android-sdk",
-          client.cacheVolume("android-sdk"),
-        ),
-    ),
+    )
   );
 
   const ctr = baseCtr
@@ -210,6 +230,18 @@ export const bundleRelease = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      client.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      client.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      client.cacheVolume("sdk-build-tools")
+    )
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
@@ -249,11 +281,7 @@ export const debugTests = async (client: Client, src = ".") => {
           "zlib",
           "gcompat",
         ])
-        .withMountedCache(
-          "/root/android-sdk",
-          client.cacheVolume("android-sdk"),
-        ),
-    ),
+    )
   );
 
   const ctr = baseCtr
@@ -261,6 +289,18 @@ export const debugTests = async (client: Client, src = ".") => {
     .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
     .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
     .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      client.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      client.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      client.cacheVolume("sdk-build-tools")
+    )
     .withDirectory("/app", context, {
       exclude: ["build", ".gradle", "app/build"],
     })
