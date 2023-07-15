@@ -18,8 +18,8 @@ export const withAndroidSdk = (ctr: Container) =>
       expand: true,
     })
     .withExec(["sdkmanager", "--version"])
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["sdkmanager", "platforms;android-33"]);
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
 
 export const lintDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
