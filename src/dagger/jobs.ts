@@ -68,6 +68,7 @@ export const lintDebug = async (client: Client, src = ".") => {
       exclude: ["build", ".gradle", "app/build"],
     })
     .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
       "sh",
@@ -127,6 +128,7 @@ export const assembleDebug = async (client: Client, src = ".") => {
       exclude: ["build", ".gradle", "app/build"],
     })
     .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
       "sh",
@@ -186,6 +188,7 @@ export const assembleRelease = async (client: Client, src = ".") => {
       exclude: ["build", ".gradle", "app/build"],
     })
     .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
       "sh",
@@ -246,6 +249,7 @@ export const bundleRelease = async (client: Client, src = ".") => {
       exclude: ["build", ".gradle", "app/build"],
     })
     .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
       "sh",
@@ -305,6 +309,7 @@ export const debugTests = async (client: Client, src = ".") => {
       exclude: ["build", ".gradle", "app/build"],
     })
     .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
     .withExec([
       "sh",
