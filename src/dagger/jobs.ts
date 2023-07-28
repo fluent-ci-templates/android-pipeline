@@ -1,5 +1,5 @@
 import Client, { Container } from "@dagger.io/dagger";
-import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.3.3/src/dagger/steps.ts";
+import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.3.6/src/dagger/steps.ts";
 
 export const withAndroidSdk = (ctr: Container) =>
   ctr
@@ -45,13 +45,15 @@ export const lintDebug = async (client: Client, src = ".") => {
           "gcompat",
         ])
     )
+      .withMountedCache("/nix", client.cacheVolume("nix"))
+      .withExec(["sh", "-c", "ls -ltr /nix"])
+      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
   );
 
   const ctr = baseCtr
-    .withMountedCache("/nix", client.cacheVolume("nix"))
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
       client.cacheVolume("sdk-platforms")
@@ -65,15 +67,17 @@ export const lintDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build"],
+      exclude: ["build", ".gradle", "app/build", ".devbox"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "ls -ltr /nix"])
+    .withExec(["nix", "--version"])
     .withExec([
       "sh",
       "-c",
-      "eval $(devbox shell --print-env) && ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
+      "devbox run -- ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
     ]);
 
   const result = await ctr.stdout();
@@ -105,13 +109,14 @@ export const assembleDebug = async (client: Client, src = ".") => {
           "gcompat",
         ])
     )
+      .withMountedCache("/nix", client.cacheVolume("nix"))
+      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
   );
 
   const ctr = baseCtr
-    .withMountedCache("/nix", client.cacheVolume("nix"))
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
       client.cacheVolume("sdk-platforms")
@@ -125,16 +130,12 @@ export const assembleDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build"],
+      exclude: ["build", ".gradle", "app/build", ".devbox"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
-    .withExec([
-      "sh",
-      "-c",
-      "eval $(devbox shell --print-env) && ./gradlew assembleDebug",
-    ]);
+    .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"]);
 
   const result = await ctr.stdout();
 
@@ -165,13 +166,14 @@ export const assembleRelease = async (client: Client, src = ".") => {
           "gcompat",
         ])
     )
+      .withMountedCache("/nix", client.cacheVolume("nix"))
+      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
   );
 
   const ctr = baseCtr
-    .withMountedCache("/nix", client.cacheVolume("nix"))
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
       client.cacheVolume("sdk-platforms")
@@ -185,16 +187,12 @@ export const assembleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build"],
+      exclude: ["build", ".gradle", "app/build", ".devbox"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
-    .withExec([
-      "sh",
-      "-c",
-      "eval $(devbox shell --print-env) && ./gradlew assembleRelease",
-    ]);
+    .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"]);
 
   const result = await ctr.stdout();
 
@@ -226,13 +224,14 @@ export const bundleRelease = async (client: Client, src = ".") => {
           "gcompat",
         ])
     )
+      .withMountedCache("/nix", client.cacheVolume("nix"))
+      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
   );
 
   const ctr = baseCtr
-    .withMountedCache("/nix", client.cacheVolume("nix"))
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
       client.cacheVolume("sdk-platforms")
@@ -246,16 +245,12 @@ export const bundleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build"],
+      exclude: ["build", ".gradle", "app/build", ".devbox"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
     .withExec(["chmod", "+x", "./gradlew"])
-    .withExec([
-      "sh",
-      "-c",
-      "eval $(devbox shell --print-env) && ./gradlew bundleRelease",
-    ]);
+    .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"]);
 
   const result = await ctr.stdout();
 
@@ -286,13 +281,14 @@ export const debugTests = async (client: Client, src = ".") => {
           "gcompat",
         ])
     )
+      .withMountedCache("/nix", client.cacheVolume("nix"))
+      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
   );
 
   const ctr = baseCtr
-    .withMountedCache("/nix", client.cacheVolume("nix"))
-    .withMountedCache("/app/.gradle", client.cacheVolume("gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("gradle-cache"))
-    .withMountedCache("/app/build", client.cacheVolume("build"))
+    .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
       client.cacheVolume("sdk-platforms")
@@ -306,7 +302,7 @@ export const debugTests = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build"],
+      exclude: ["build", ".gradle", "app/build", ".devbox"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -314,7 +310,7 @@ export const debugTests = async (client: Client, src = ".") => {
     .withExec([
       "sh",
       "-c",
-      "eval $(devbox shell --print-env) && ./gradlew -Pci --console=plain :app:testDebug",
+      "devbox run -- ./gradlew -Pci --console=plain :app:testDebug",
     ]);
 
   const result = await ctr.stdout();
