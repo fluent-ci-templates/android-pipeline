@@ -52,7 +52,10 @@ export const lintDebug = async (client: Client, src = ".") => {
 
   const ctr = baseCtr
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache(
+      "/root/.gradle",
+      client.cacheVolume("android-gradle-cache")
+    )
     .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
@@ -67,7 +70,7 @@ export const lintDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox"],
+      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -115,7 +118,10 @@ export const assembleDebug = async (client: Client, src = ".") => {
 
   const ctr = baseCtr
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache(
+      "/root/.gradle",
+      client.cacheVolume("android-gradle-cache")
+    )
     .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
@@ -130,7 +136,7 @@ export const assembleDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox"],
+      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -172,7 +178,10 @@ export const assembleRelease = async (client: Client, src = ".") => {
 
   const ctr = baseCtr
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache(
+      "/root/.gradle",
+      client.cacheVolume("android-gradle-cache")
+    )
     .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
@@ -187,7 +196,7 @@ export const assembleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox"],
+      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -230,7 +239,10 @@ export const bundleRelease = async (client: Client, src = ".") => {
 
   const ctr = baseCtr
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache(
+      "/root/.gradle",
+      client.cacheVolume("android-gradle-cache")
+    )
     .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
@@ -245,7 +257,7 @@ export const bundleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox"],
+      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -287,7 +299,10 @@ export const debugTests = async (client: Client, src = ".") => {
 
   const ctr = baseCtr
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", client.cacheVolume("android-gradle-cache"))
+    .withMountedCache(
+      "/root/.gradle",
+      client.cacheVolume("android-gradle-cache")
+    )
     .withMountedCache("/app/build", client.cacheVolume("android-build"))
     .withMountedCache(
       "/root/android-sdk/platforms",
@@ -302,7 +317,7 @@ export const debugTests = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox"],
+      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
