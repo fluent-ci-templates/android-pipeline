@@ -48,11 +48,13 @@ import { Dagger } from "https://deno.land/x/android_pipeline/mod.ts";
 
 const { lintDebug, assembleDebug, debugTests } = Dagger;
 
-export default function pipeline(src = ".") {
+function pipeline(src = ".") {
   connect(async (client: Client) => {
     await lintDebug(client, src);
     await assembleDebug(client, src);
     await debugTests(client, src);
   });
 }
+
+pipeline();
 ```
