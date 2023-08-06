@@ -225,7 +225,6 @@ export const bundleRelease = async (client: Client, src = ".") => {
         .pipeline(Job.bundleRelease)
         .container()
         .from("alpine:latest")
-        .withEnvVariable("ANDROID_HOME", "/root/android-sdk")
         .withExec(["apk", "update"])
         .withExec([
           "apk",
