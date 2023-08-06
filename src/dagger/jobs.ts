@@ -1,6 +1,14 @@
 import Client, { Container } from "@dagger.io/dagger";
 import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.3.6/src/dagger/steps.ts";
 
+export enum Job {
+  lintDebug = "lintDebug",
+  assembleDebug = "assembleDebug",
+  assembleRelease = "assembleRelease",
+  bundleRelease = "bundleRelease",
+  debugTests = "debugTests",
+}
+
 export const withAndroidSdk = (ctr: Container) =>
   ctr
     .withEnvVariable("ANDROID_HOME", "/root/android-sdk")
@@ -27,7 +35,7 @@ export const lintDebug = async (client: Client, src = ".") => {
   const baseCtr = withDevbox(
     withAndroidSdk(
       client
-        .pipeline("lintDebug")
+        .pipeline(Job.lintDebug)
         .container()
         .from("alpine:latest")
         .withExec(["apk", "update"])
@@ -94,7 +102,7 @@ export const assembleDebug = async (client: Client, src = ".") => {
   const baseCtr = withDevbox(
     withAndroidSdk(
       client
-        .pipeline("assembleDebug")
+        .pipeline(Job.assembleDebug)
         .container()
         .from("alpine:latest")
         .withExec(["apk", "update"])
@@ -154,7 +162,7 @@ export const assembleRelease = async (client: Client, src = ".") => {
   const baseCtr = withDevbox(
     withAndroidSdk(
       client
-        .pipeline("assembleRelease")
+        .pipeline(Job.assembleRelease)
         .container()
         .from("alpine:latest")
         .withExec(["apk", "update"])
@@ -214,7 +222,7 @@ export const bundleRelease = async (client: Client, src = ".") => {
   const baseCtr = withDevbox(
     withAndroidSdk(
       client
-        .pipeline("bundleRelease")
+        .pipeline(Job.bundleRelease)
         .container()
         .from("alpine:latest")
         .withEnvVariable("ANDROID_HOME", "/root/android-sdk")
@@ -275,7 +283,7 @@ export const debugTests = async (client: Client, src = ".") => {
   const baseCtr = withDevbox(
     withAndroidSdk(
       client
-        .pipeline("debugTests")
+        .pipeline(Job.debugTests)
         .container()
         .from("alpine:latest")
         .withExec(["apk", "update"])
@@ -331,4 +339,22 @@ export const debugTests = async (client: Client, src = ".") => {
   const result = await ctr.stdout();
 
   console.log(result);
+};
+
+export type JobExec = (client: Client, src?: string) => Promise<void>;
+
+export const runnableJobs: Record<Job, JobExec> = {
+  [Job.lintDebug]: lintDebug,
+  [Job.assembleDebug]: assembleDebug,
+  [Job.assembleRelease]: assembleRelease,
+  [Job.bundleRelease]: bundleRelease,
+  [Job.debugTests]: debugTests,
+};
+
+export const jobDescriptions: Record<Job, string> = {
+  [Job.lintDebug]: "Runs lintDebug",
+  [Job.assembleDebug]: "Assembles debug apk",
+  [Job.assembleRelease]: "Assembles release apk",
+  [Job.bundleRelease]: "Bundles release apk",
+  [Job.debugTests]: "Runs debug tests",
 };
