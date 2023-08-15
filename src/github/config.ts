@@ -1,7 +1,7 @@
 import { JobSpec, Workflow } from "fluent_github_actions";
 
-export function generateYaml() {
-  const workflow = new Workflow("Codecov");
+export function generateYaml(): Workflow {
+  const workflow = new Workflow("Build Android App");
 
   const push = {
     branches: ["main"],
@@ -12,7 +12,7 @@ export function generateYaml() {
   sudo mv bin/dagger /usr/local/bin
   dagger version`;
 
-  const tests: JobSpec = {
+  const build: JobSpec = {
     "runs-on": "ubuntu-latest",
     steps: [
       {
@@ -33,20 +33,13 @@ export function generateYaml() {
         run: setupDagger,
       },
       {
-        name: "Run Dagger Pipelines",
-        run: "dagger run fluentci . fmt lint test",
-      },
-      {
-        name: "Upload to Codecov",
-        run: "dagger run fluentci codecov_pipeline",
-        env: {
-          CODECOV_TOKEN: "${{ secrets.CODECOV_TOKEN }}",
-        },
+        name: "Run Build",
+        run: "dagger run fluentci android_pipeline assembleRelease",
       },
     ],
   };
 
-  workflow.on({ push }).jobs({ tests });
+  workflow.on({ push }).jobs({ build });
 
-  workflow.save(".github/workflows/ci.yml");
+  return workflow;
 }
