@@ -1,5 +1,6 @@
 # Android Pipeline
 
+[![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fandroid_pipeline&query=%24.version)](https://pkg.fluentci.io/android_pipeline)
 [![deno module](https://shield.deno.dev/x/android_pipeline)](https://deno.land/x/android_pipeline)
 ![deno compatibility](https://shield.deno.dev/deno/^1.34)
 [![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/android-pipeline)](https://codecov.io/gh/fluent-ci-templates/android-pipeline)
@@ -44,7 +45,7 @@ You can also use this pipeline programmatically:
 
 ```ts
 import { Client, connect } from "https://esm.sh/@dagger.io/dagger@0.8.1";
-import { Dagger } from "https://deno.land/x/android_pipeline/mod.ts";
+import { Dagger } from "https://pkg.fluentci.io/android_pipeline/mod.ts";
 
 const { lintDebug, assembleDebug, debugTests } = Dagger;
 
