@@ -44,7 +44,7 @@ dagger run fluentci .
 You can also use this pipeline programmatically:
 
 ```ts
-import Client, { connect } from "https://sdk.fluentci.io/v0.1.4/mod.ts";
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.5/mod.ts";
 import { Dagger } from "https://pkg.fluentci.io/android_pipeline/mod.ts";
 
 const { lintDebug, assembleDebug, debugTests } = Dagger;
