@@ -5,7 +5,6 @@ import {
   bundleRelease,
   debugTests,
   lintDebug,
-  withAndroidSdk,
 } from "./jobs.ts";
 
 export {
@@ -15,5 +14,4 @@ export {
   debugTests,
   lintDebug,
   pipeline,
-  withAndroidSdk,
 };

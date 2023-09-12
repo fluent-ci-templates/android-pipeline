@@ -8,6 +8,14 @@ export enum Job {
   debugTests = "debugTests",
 }
 
+export const exclude = [
+  "build",
+  ".gradle",
+  "app/build",
+  ".devbox",
+  ".fluentci",
+];
+
 export const lintDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
 
@@ -34,7 +42,7 @@ export const lintDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -78,7 +86,7 @@ export const assembleDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -117,7 +125,7 @@ export const assembleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -155,7 +163,7 @@ export const bundleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -193,7 +201,7 @@ export const debugTests = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
