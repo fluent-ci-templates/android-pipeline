@@ -1,5 +1,4 @@
-import Client, { Container } from "@dagger.io/dagger";
-import { withDevbox } from "https://deno.land/x/nix_installer_pipeline@v0.3.6/src/dagger/steps.ts";
+import Client from "@fluentci.io/dagger";
 
 export enum Job {
   lintDebug = "lintDebug",
@@ -9,56 +8,21 @@ export enum Job {
   debugTests = "debugTests",
 }
 
-export const withAndroidSdk = (ctr: Container) =>
-  ctr
-    .withEnvVariable("ANDROID_HOME", "/root/android-sdk")
-    .withExec([
-      "sh",
-      "-c",
-      "mkdir -p $ANDROID_HOME && wget --output-document=$ANDROID_HOME/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip",
-    ])
-    .withExec([
-      "sh",
-      "-c",
-      "cd $ANDROID_HOME && rm -rf cmdline-tools && unzip -d cmdline-tools cmdline-tools.zip && mv cmdline-tools/cmdline-tools cmdline-tools/latest",
-    ])
-    .withEnvVariable("PATH", "$PATH:$ANDROID_HOME/cmdline-tools/latest/bin", {
-      expand: true,
-    })
-    .withExec(["sdkmanager", "--version"])
-    .withExec(["sdkmanager", "platforms;android-33"])
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"]);
+export const exclude = [
+  "build",
+  ".gradle",
+  "app/build",
+  ".devbox",
+  ".fluentci",
+];
 
 export const lintDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    withAndroidSdk(
-      client
-        .pipeline(Job.lintDebug)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec([
-          "apk",
-          "add",
-          "bash",
-          "curl",
-          "openjdk11",
-          "wget",
-          "unzip",
-          "git",
-          "libstdc++",
-          "zlib",
-          "gcompat",
-        ])
-    )
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
-
-  const ctr = baseCtr
+  const ctr = client
+    .pipeline(Job.lintDebug)
+    .container()
+    .from("ghcr.io/fluent-ci-templates/android:latest")
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
     .withMountedCache(
       "/root/.gradle",
@@ -78,7 +42,7 @@ export const lintDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -99,32 +63,10 @@ export const lintDebug = async (client: Client, src = ".") => {
 export const assembleDebug = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    withAndroidSdk(
-      client
-        .pipeline(Job.assembleDebug)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec([
-          "apk",
-          "add",
-          "bash",
-          "curl",
-          "openjdk11",
-          "wget",
-          "unzip",
-          "git",
-          "libstdc++",
-          "zlib",
-          "gcompat",
-        ])
-    )
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
-
-  const ctr = baseCtr
+  const ctr = client
+    .pipeline(Job.assembleDebug)
+    .container()
+    .from("ghcr.io/fluent-ci-templates/android:latest")
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
     .withMountedCache(
       "/root/.gradle",
@@ -144,7 +86,7 @@ export const assembleDebug = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -159,32 +101,11 @@ export const assembleDebug = async (client: Client, src = ".") => {
 export const assembleRelease = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    withAndroidSdk(
-      client
-        .pipeline(Job.assembleRelease)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec([
-          "apk",
-          "add",
-          "bash",
-          "curl",
-          "openjdk11",
-          "wget",
-          "unzip",
-          "git",
-          "libstdc++",
-          "zlib",
-          "gcompat",
-        ])
-    )
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
-
-  const ctr = baseCtr
+  const ctr = client
+    .pipeline(Job.assembleRelease)
+    .container()
+    .from("ghcr.io/fluent-ci-templates/android:latest")
+    .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
     .withMountedCache(
       "/root/.gradle",
@@ -204,7 +125,7 @@ export const assembleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -219,32 +140,10 @@ export const assembleRelease = async (client: Client, src = ".") => {
 export const bundleRelease = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    withAndroidSdk(
-      client
-        .pipeline(Job.bundleRelease)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec([
-          "apk",
-          "add",
-          "bash",
-          "curl",
-          "openjdk11",
-          "wget",
-          "unzip",
-          "git",
-          "libstdc++",
-          "zlib",
-          "gcompat",
-        ])
-    )
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
-
-  const ctr = baseCtr
+  const ctr = client
+    .pipeline(Job.bundleRelease)
+    .container()
+    .from("ghcr.io/fluent-ci-templates/android:latest")
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
     .withMountedCache(
       "/root/.gradle",
@@ -264,7 +163,7 @@ export const bundleRelease = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
@@ -279,32 +178,10 @@ export const bundleRelease = async (client: Client, src = ".") => {
 export const debugTests = async (client: Client, src = ".") => {
   const context = client.host().directory(src);
 
-  const baseCtr = withDevbox(
-    withAndroidSdk(
-      client
-        .pipeline(Job.debugTests)
-        .container()
-        .from("alpine:latest")
-        .withExec(["apk", "update"])
-        .withExec([
-          "apk",
-          "add",
-          "bash",
-          "curl",
-          "openjdk11",
-          "wget",
-          "unzip",
-          "git",
-          "libstdc++",
-          "zlib",
-          "gcompat",
-        ])
-    )
-      .withMountedCache("/nix", client.cacheVolume("nix"))
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
-  );
-
-  const ctr = baseCtr
+  const ctr = client
+    .pipeline(Job.debugTests)
+    .container()
+    .from("ghcr.io/fluent-ci-templates/android:latest")
     .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
     .withMountedCache(
       "/root/.gradle",
@@ -324,7 +201,7 @@ export const debugTests = async (client: Client, src = ".") => {
       client.cacheVolume("sdk-build-tools")
     )
     .withDirectory("/app", context, {
-      exclude: ["build", ".gradle", "app/build", ".devbox", ".fluentci"],
+      exclude,
     })
     .withWorkdir("/app")
     .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
