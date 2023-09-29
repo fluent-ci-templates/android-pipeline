@@ -15,7 +15,7 @@ export function generateYaml(): BuildSpec {
       ],
     })
     .phase("build", {
-      commands: ["dagger run fluentci android_pipeline assembleRelease"],
+      commands: ["fluentci run android_pipeline assembleRelease"],
     })
     .phase("post_build", {
       commands: ["echo Build completed on `date`"],

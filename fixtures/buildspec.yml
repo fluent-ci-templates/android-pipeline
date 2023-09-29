@@ -13,7 +13,7 @@ phases:
       - dagger version
   build:
     commands:
-      - dagger run fluentci android_pipeline assembleRelease
+      - fluentci run android_pipeline assembleRelease
   post_build:
     commands:
       - echo Build completed on `date`

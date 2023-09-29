@@ -1,12 +1,16 @@
-const command = new Deno.Command(Deno.execPath(), {
-  args: [
-    "run",
-    "-A",
-    "--import-map=https://deno.land/x/android_pipeline/import_map.json",
-    "https://deno.land/x/android_pipeline/src/dagger/runner.ts",
-  ],
-});
+import Client, { connect } from "https://sdk.fluentci.io/v0.1.9/mod.ts";
+import {
+  lintDebug,
+  assembleDebug,
+  debugTests,
+} from "https://pkg.fluentci.io/android_pipeline@v0.6.2/mod.ts";
 
-const { stdout } = await command.output();
+function pipeline(src = ".") {
+  connect(async (client: Client) => {
+    await lintDebug(client, src);
+    await assembleDebug(client, src);
+    await debugTests(client, src);
+  });
+}
 
-console.log(new TextDecoder().decode(stdout));
+pipeline();

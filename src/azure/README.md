@@ -34,7 +34,7 @@ steps:
         sudo mv bin/dagger /usr/local/bin
         dagger version
     displayName: Setup Dagger
-  - script: dagger run fluentci android_pipeline assembleRelease
+  - script: fluentci run android_pipeline assembleRelease
     displayName: Run Dagger Pipelines
 
 ```

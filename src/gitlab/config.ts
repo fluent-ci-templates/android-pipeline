@@ -25,7 +25,7 @@ export function generateYaml(): GitlabCI {
 
   const build = new Job()
     .extends(".dagger")
-    .script("dagger run fluentci android_pipeline assembleRelease");
+    .script("fluentci run android_pipeline assembleRelease");
 
   return new GitlabCI()
     .addJob(".docker", docker)

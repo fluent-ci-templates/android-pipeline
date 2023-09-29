@@ -12,7 +12,7 @@ A ready-to-use CI/CD Pipeline for your Android projects.
 Run the following command:
 
 ```bash
-dagger run fluentci android_pipeline
+fluentci run android_pipeline
 ```
 
 Or, if you want to use it as a template:
@@ -26,7 +26,7 @@ This will create a `.fluentci` folder in your project.
 Now you can run the pipeline with:
 
 ```bash
-dagger run fluentci .
+fluentci run .
 ```
 
 ## Jobs
@@ -45,7 +45,7 @@ You can also use this pipeline programmatically:
 
 ```ts
 import Client, { connect } from "https://sdk.fluentci.io/v0.1.9/mod.ts";
-import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.6.1/mod.ts";
+import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.6.2/mod.ts";
 
 
 function pipeline(src = ".") {

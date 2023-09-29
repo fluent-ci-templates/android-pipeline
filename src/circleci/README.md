@@ -34,7 +34,7 @@ jobs:
           dagger version
       - run:
           name: Upload Coverage
-          command: dagger run fluentci android_pipeline assembleRelease
+          command: fluentci run android_pipeline assembleRelease
     machine:
       image: ubuntu-2004:2023.07.1
 workflows:

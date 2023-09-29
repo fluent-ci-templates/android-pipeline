@@ -41,7 +41,7 @@ Generated file:
 build:
   extends: .dagger
   script:
-    - dagger run fluentci android_pipeline assembleRelease
+    - fluentci run android_pipeline assembleRelease
 
 ```
 
