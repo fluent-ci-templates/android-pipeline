@@ -1,5 +1,16 @@
 {
-  "version": "2",
+  "version": "3",
+  "packages": {
+    "specifiers": {
+      "npm:@types/node": "npm:@types/node@18.16.19"
+    },
+    "npm": {
+      "@types/node@18.16.19": {
+        "integrity": "sha512-IXl7o+R9iti9eBW4Wg2hx1xQDig183jj7YLn8F7udNceyfkbn1ZxmzZXuak20gR40D7pIkIY1kYGx5VIGbaHKA==",
+        "dependencies": {}
+      }
+    }
+  },
   "remote": {
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar@v0.1.1/deps.ts": "096395daebc7ed8a18f0484e4ffcc3a7f70e50946735f7df9611a7fcfd8272cc",
     "https://cdn.jsdelivr.net/gh/tsirysndr/tar@v0.1.1/mod.ts": "e269d71c72ae68e82c1960e5db2a0c7419c97c9683ef717de0ab75d90f364713",
