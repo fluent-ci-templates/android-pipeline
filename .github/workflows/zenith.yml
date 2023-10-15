@@ -18,6 +18,6 @@ jobs:
           dagger version
       - name: Run Dagger Pipelines
         run: |
-          dagger query --doc lint.gql
+          dagger query --doc lint_debug.gql
           dagger query --doc assemble_debug.gql
         working-directory: example
