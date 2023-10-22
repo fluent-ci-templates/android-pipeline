@@ -23,7 +23,10 @@ export const lintDebug = async (src = ".") => {
     const ctr = client
       .pipeline(Job.lintDebug)
       .container()
-      .from("ghcr.io/fluent-ci-templates/android:latest")
+      .from("ghcr.io/fluentci-io/android:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
       .withMountedCache(
         "/root/.gradle",
@@ -70,7 +73,10 @@ export const assembleDebug = async (src = ".") => {
     const ctr = client
       .pipeline(Job.assembleDebug)
       .container()
-      .from("ghcr.io/fluent-ci-templates/android:latest")
+      .from("ghcr.io/fluentci-io/android:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
       .withMountedCache(
         "/root/.gradle",
@@ -111,8 +117,10 @@ export const assembleRelease = async (src = ".") => {
     const ctr = client
       .pipeline(Job.assembleRelease)
       .container()
-      .from("ghcr.io/fluent-ci-templates/android:latest")
-      .withMountedCache("/etc/nix", client.cacheVolume("nix-etc"))
+      .from("ghcr.io/fluentci-io/android:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
       .withMountedCache(
         "/root/.gradle",
@@ -153,7 +161,10 @@ export const bundleRelease = async (src = ".") => {
     const ctr = client
       .pipeline(Job.bundleRelease)
       .container()
-      .from("ghcr.io/fluent-ci-templates/android:latest")
+      .from("ghcr.io/fluentci-io/android:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
       .withMountedCache(
         "/root/.gradle",
@@ -194,7 +205,10 @@ export const debugTests = async (src = ".") => {
     const ctr = client
       .pipeline(Job.debugTests)
       .container()
-      .from("ghcr.io/fluent-ci-templates/android:latest")
+      .from("ghcr.io/fluentci-io/android:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
       .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
       .withMountedCache(
         "/root/.gradle",
