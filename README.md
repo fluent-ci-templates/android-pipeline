@@ -52,7 +52,7 @@ lintDebug(src: String!): String
 You can also use this pipeline programmatically:
 
 ```ts
-import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.7.0/mod.ts";
+import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.7.1/mod.ts";
 
 await lintDebug();
 await debugTests();
