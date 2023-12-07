@@ -133,10 +133,12 @@ export async function assembleDebug(
  * @function
  * @description Assembles release apk
  * @param {string | Directory | undefined} src
+ * @param {boolean} signed
  * @returns {Promise<File | string>}
  */
 export async function assembleRelease(
-  src: string | Directory | undefined = "."
+  src: string | Directory | undefined = ".",
+  signed = false
 ): Promise<File | string> {
   let id = "";
   await connect(async (client: Client) => {
@@ -177,7 +179,11 @@ export async function assembleRelease(
 
     await ctr.stdout();
     id = await ctr
-      .file("/app/app/build/outputs/apk/release/app-release.apk")
+      .file(
+        `/app/app/build/outputs/apk/release/app-release${
+          signed ? "" : "-unsigned"
+        }.apk`
+      )
       .id();
   });
   return id;
