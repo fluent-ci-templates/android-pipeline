@@ -1,5 +1,7 @@
 {
   android {
-    assembleDebug(src: ".")
+    assembleDebug(src: ".") {
+      id
+    }
   }
 }

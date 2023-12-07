@@ -20,4 +20,6 @@ jobs:
         run: |
           dagger query --doc lint_debug.gql
           dagger query --doc assemble_debug.gql
+          dagger call assembleRelease --src .
+          dagger call bundleRelease --src .
         working-directory: example
