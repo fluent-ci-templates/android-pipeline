@@ -29,6 +29,14 @@ Now you can run the pipeline with:
 fluentci run .
 ```
 
+## Dagger Module
+
+Use as a [Dagger](https://dagger.io) module:
+
+```bash
+dagger mod install github.com/fluent-ci-templates/android-pipeline@mod
+```
+
 ## Jobs
 
 | Job            | Description           |
@@ -39,12 +47,8 @@ fluentci run .
 | assembleRelease| generate apk (release)|
 | bundleRelease  | generate aab (release)|
 
-```graphql
-assembleDebug(src: String!): String
-assembleRelease(src: String!): String
-bundleRelease(src: String!): String
-debugTests(src: String!): String
-lintDebug(src: String!): String
+```typescript
+
 ```
 
 ## Programmatic usage
@@ -52,7 +56,7 @@ lintDebug(src: String!): String
 You can also use this pipeline programmatically:
 
 ```ts
-import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.8.0/mod.ts";
+import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.9.0/mod.ts";
 
 await lintDebug();
 await debugTests();

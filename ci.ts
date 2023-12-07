@@ -2,7 +2,7 @@ import {
   lintDebug,
   assembleDebug,
   debugTests,
-} from "https://pkg.fluentci.io/android_pipeline@v0.8.0/mod.ts";
+} from "https://pkg.fluentci.io/android_pipeline@v0.9.0/mod.ts";
 
 await lintDebug();
 await debugTests();

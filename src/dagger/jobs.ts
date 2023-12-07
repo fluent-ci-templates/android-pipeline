@@ -120,10 +120,11 @@ export async function assembleDebug(
       .withWorkdir("/app")
       .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
       .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"]);
+      .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"])
+      .withExec(["cp", "/app/build/outputs/apk/debug/app-debug.apk", "/"]);
 
     await ctr.stdout();
-    id = await ctr.file("/app/build/outputs/apk/debug/app-debug.apk").id();
+    id = await ctr.file("/app-debug.apk").id();
   });
   return id;
 }
@@ -172,10 +173,11 @@ export async function assembleRelease(
       .withWorkdir("/app")
       .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
       .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"]);
+      .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"])
+      .withExec(["cp", "/app/build/outputs/apk/release/app-release.apk", "/"]);
 
     await ctr.stdout();
-    id = await ctr.file("/app/build/outputs/apk/release/app-release.apk").id();
+    id = await ctr.file("/app-release.apk").id();
   });
   return id;
 }
@@ -224,12 +226,15 @@ export async function bundleRelease(
       .withWorkdir("/app")
       .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
       .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"]);
+      .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"])
+      .withExec([
+        "cp",
+        "/app/build/outputs/bundle/release/app-release.aab",
+        "/",
+      ]);
 
     await ctr.stdout();
-    id = await ctr
-      .file("/app/build/outputs/bundle/release/app-release.aab")
-      .id();
+    id = await ctr.file("/app-release.aab").id();
   });
   return id;
 }
