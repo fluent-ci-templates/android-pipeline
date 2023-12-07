@@ -84,4 +84,4 @@ await assembleDebug();
 
 ## 📚 Example
 
-See [example](./example) for a working example.
+See [example](https://github.com/fluent-ci-templates/android-pipeline/tree/main/example) for a working example.
