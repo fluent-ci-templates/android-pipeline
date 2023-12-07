@@ -49,6 +49,25 @@ dagger mod install github.com/fluent-ci-templates/android-pipeline@mod
 
 ```typescript
 
+lintDebug(
+  src?: string | Directory
+): Promise<string>
+
+assembleDebug(
+  src?: string | Directory
+): Promise<File | string>
+
+assembleRelease(
+  src?: string | Directory
+): Promise<File | string>
+
+bundleRelease(
+  src?: string | Directory
+): Promise<File | string>
+
+debugTests(
+  src?: string | Directory
+): Promise<string>
 ```
 
 ## Programmatic usage
