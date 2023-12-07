@@ -81,3 +81,7 @@ await lintDebug();
 await debugTests();
 await assembleDebug();
 ```
+
+## 📚 Example
+
+See [example](./example) for a working example.

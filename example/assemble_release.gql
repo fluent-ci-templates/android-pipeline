@@ -1,0 +1,7 @@
+{
+  android {
+    assembleRelease(src: ".") {
+      id
+    }
+  }
+}
