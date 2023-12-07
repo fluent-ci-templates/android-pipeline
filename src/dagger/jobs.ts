@@ -1,4 +1,7 @@
-import Client, { connect } from "../../deps.ts";
+import { Directory, File } from "../../deps.ts";
+import { Client } from "../../sdk/client.gen.ts";
+import { connect } from "../../sdk/connect.ts";
+import { getDirectory } from "./lib.ts";
 
 export enum Job {
   lintDebug = "lintDebug",
@@ -16,9 +19,18 @@ export const exclude = [
   ".fluentci",
 ];
 
-export const lintDebug = async (src = ".") => {
+/**
+ * @function
+ * @description Runs lintDebug
+ * @param {string | Directory | undefined} src
+ * @returns {Promise<string>}
+ */
+export async function lintDebug(
+  src: string | Directory | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const ctr = client
       .pipeline(Job.lintDebug)
@@ -59,16 +71,23 @@ export const lintDebug = async (src = ".") => {
         "devbox run -- ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "done";
-};
+  return result;
+}
 
-export const assembleDebug = async (src = ".") => {
+/**
+ * @function
+ * @description Assembles debug apk
+ * @param {string | Directory | undefined} src
+ * @returns {Promise<File | string>}
+ */
+export async function assembleDebug(
+  src: string | Directory | undefined = "."
+): Promise<File | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const ctr = client
       .pipeline(Job.assembleDebug)
@@ -103,16 +122,24 @@ export const assembleDebug = async (src = ".") => {
       .withExec(["chmod", "+x", "./gradlew"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr.file("/app/build/outputs/apk/debug/app-debug.apk").id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const assembleRelease = async (src = ".") => {
+/**
+ * @function
+ * @description Assembles release apk
+ * @param {string | Directory | undefined} src
+ * @returns {Promise<File | string>}
+ */
+export async function assembleRelease(
+  src: string | Directory | undefined = "."
+): Promise<File | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const ctr = client
       .pipeline(Job.assembleRelease)
@@ -147,16 +174,24 @@ export const assembleRelease = async (src = ".") => {
       .withExec(["chmod", "+x", "./gradlew"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr.file("/app/build/outputs/apk/release/app-release.apk").id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const bundleRelease = async (src = ".") => {
+/**
+ * @function
+ * @description Bundles release apk
+ * @param {string | Directory | undefined} src
+ * @returns {Promise<File | string>}
+ */
+export async function bundleRelease(
+  src: string | Directory | undefined = "."
+): Promise<File | string> {
+  let id = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const ctr = client
       .pipeline(Job.bundleRelease)
@@ -191,16 +226,26 @@ export const bundleRelease = async (src = ".") => {
       .withExec(["chmod", "+x", "./gradlew"])
       .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    await ctr.stdout();
+    id = await ctr
+      .file("/app/build/outputs/bundle/release/app-release.aab")
+      .id();
   });
-  return "done";
-};
+  return id;
+}
 
-export const debugTests = async (src = ".") => {
+/**
+ * @function
+ * @description Runs debug tests
+ * @param {string | Directory | undefined} src
+ * @returns {Promise<string>}
+ */
+export async function debugTests(
+  src: string | Directory | undefined = "."
+): Promise<string> {
+  let result = "";
   await connect(async (client: Client) => {
-    const context = client.host().directory(src);
+    const context = getDirectory(client, src);
 
     const ctr = client
       .pipeline(Job.debugTests)
@@ -239,14 +284,14 @@ export const debugTests = async (src = ".") => {
         "devbox run -- ./gradlew -Pci --console=plain :app:testDebug",
       ]);
 
-    const result = await ctr.stdout();
-
-    console.log(result);
+    result = await ctr.stdout();
   });
-  return "done";
-};
+  return result;
+}
 
-export type JobExec = (src?: string) => Promise<string>;
+export type JobExec = (
+  src?: string | Directory
+) => Promise<Directory | File | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.lintDebug]: lintDebug,
