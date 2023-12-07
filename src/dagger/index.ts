@@ -5,6 +5,7 @@ import {
   bundleRelease,
   debugTests,
   lintDebug,
+  dev,
 } from "./jobs.ts";
 
 export {
@@ -13,5 +14,6 @@ export {
   bundleRelease,
   debugTests,
   lintDebug,
+  dev,
   pipeline,
 };

@@ -1,4 +1,4 @@
-import { Directory, File } from "../../deps.ts";
+import { Directory, File, Container } from "../../deps.ts";
 import { Client } from "../../sdk/client.gen.ts";
 import { connect } from "../../sdk/connect.ts";
 import { getDirectory } from "./lib.ts";
@@ -9,6 +9,7 @@ export enum Job {
   assembleRelease = "assembleRelease",
   bundleRelease = "bundleRelease",
   debugTests = "debugTests",
+  dev = "dev",
 }
 
 export const exclude = [
@@ -294,9 +295,60 @@ export async function debugTests(
   return result;
 }
 
+/**
+ * @function
+ * @description Returns a Container with Android SDK and Nix installed
+ * @param {string | Directory | undefined} src
+ * @returns {Promise<Container | string>}
+ */
+export async function dev(
+  src: string | Directory | undefined = "."
+): Promise<Container | string> {
+  let id = "";
+  await connect(async (client: Client) => {
+    const context = getDirectory(client, src);
+
+    const ctr = client
+      .pipeline(Job.bundleRelease)
+      .container()
+      .from("ghcr.io/fluentci-io/android:latest")
+      .withExec(["mv", "/nix/store", "/nix/store-orig"])
+      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
+      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
+      .withMountedCache(
+        "/root/.gradle",
+        client.cacheVolume("android-gradle-cache")
+      )
+      .withMountedCache("/app/build", client.cacheVolume("android-build"))
+      .withMountedCache(
+        "/root/android-sdk/platforms",
+        client.cacheVolume("sdk-platforms")
+      )
+      .withMountedCache(
+        "/root/android-sdk/system-images",
+        client.cacheVolume("sdk-system-images")
+      )
+      .withMountedCache(
+        "/root/android-sdk/build-tools",
+        client.cacheVolume("sdk-build-tools")
+      )
+      .withDirectory("/app", context, {
+        exclude,
+      })
+      .withWorkdir("/app")
+      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+      .withExec(["chmod", "+x", "./gradlew"]);
+
+    await ctr.stdout();
+    id = await ctr.id();
+  });
+  return id;
+}
+
 export type JobExec = (
   src?: string | Directory
-) => Promise<Directory | File | string>;
+) => Promise<Directory | File | Container | string>;
 
 export const runnableJobs: Record<Job, JobExec> = {
   [Job.lintDebug]: lintDebug,
@@ -304,6 +356,7 @@ export const runnableJobs: Record<Job, JobExec> = {
   [Job.assembleRelease]: assembleRelease,
   [Job.bundleRelease]: bundleRelease,
   [Job.debugTests]: debugTests,
+  [Job.dev]: dev,
 };
 
 export const jobDescriptions: Record<Job, string> = {
@@ -312,4 +365,5 @@ export const jobDescriptions: Record<Job, string> = {
   [Job.assembleRelease]: "Assembles release apk",
   [Job.bundleRelease]: "Bundles release apk",
   [Job.debugTests]: "Runs debug tests",
+  [Job.dev]: "Returns a Container with Android SDK and Nix installed",
 };
