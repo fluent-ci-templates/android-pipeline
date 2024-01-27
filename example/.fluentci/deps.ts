@@ -1,6 +1,6 @@
 export { assertEquals } from "https://deno.land/std@0.191.0/testing/asserts.ts";
 
-export type { DirectoryID, SecretID } from "./sdk/client.gen.ts";
+export type { DirectoryID, SecretID, dag } from "./sdk/client.gen.ts";
 export { Directory, Secret, File, Container } from "./sdk/client.gen.ts";
 export { connect, uploadContext } from "https://sdk.fluentci.io/v0.3.0/mod.ts";
 export { brightGreen } from "https://deno.land/std@0.191.0/fmt/colors.ts";

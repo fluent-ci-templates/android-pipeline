@@ -1,6 +1,5 @@
 import { Directory, File, Container } from "../../deps.ts";
-import { Client } from "../../sdk/client.gen.ts";
-import { connect } from "../../sdk/connect.ts";
+import { dag } from "../../sdk/client.gen.ts";
 import { getDirectory } from "./lib.ts";
 
 export enum Job {
@@ -30,50 +29,45 @@ export async function lintDebug(
   src: string | Directory | undefined = "."
 ): Promise<string> {
   let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const ctr = client
-      .pipeline(Job.lintDebug)
-      .container()
-      .from("ghcr.io/fluentci-io/android:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("android-gradle-cache")
-      )
-      .withMountedCache("/app/build", client.cacheVolume("android-build"))
-      .withMountedCache(
-        "/root/android-sdk/platforms",
-        client.cacheVolume("sdk-platforms")
-      )
-      .withMountedCache(
-        "/root/android-sdk/system-images",
-        client.cacheVolume("sdk-system-images")
-      )
-      .withMountedCache(
-        "/root/android-sdk/build-tools",
-        client.cacheVolume("sdk-build-tools")
-      )
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "ls -ltr /nix"])
-      .withExec(["nix", "--version"])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
-      ]);
+  const ctr = dag
+    .pipeline(Job.lintDebug)
+    .container()
+    .from("ghcr.io/fluentci-io/android:latest")
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      dag.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      dag.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      dag.cacheVolume("sdk-build-tools")
+    )
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "ls -ltr /nix"])
+    .withExec(["nix", "--version"])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  result = await ctr.stdout();
   return result;
 }
 
@@ -86,46 +80,42 @@ export async function lintDebug(
 export async function assembleDebug(
   src: string | Directory | undefined = "."
 ): Promise<File | string> {
-  let id = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const ctr = client
-      .pipeline(Job.assembleDebug)
-      .container()
-      .from("ghcr.io/fluentci-io/android:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("android-gradle-cache")
-      )
-      .withMountedCache("/app/build", client.cacheVolume("android-build"))
-      .withMountedCache(
-        "/root/android-sdk/platforms",
-        client.cacheVolume("sdk-platforms")
-      )
-      .withMountedCache(
-        "/root/android-sdk/system-images",
-        client.cacheVolume("sdk-system-images")
-      )
-      .withMountedCache(
-        "/root/android-sdk/build-tools",
-        client.cacheVolume("sdk-build-tools")
-      )
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"]);
+  const ctr = dag
+    .pipeline(Job.assembleDebug)
+    .container()
+    .from("ghcr.io/fluentci-io/android:latest")
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      dag.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      dag.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      dag.cacheVolume("sdk-build-tools")
+    )
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"]);
 
-    await ctr.stdout();
-    id = await ctr.file("/app/app/build/outputs/apk/debug/app-debug.apk").id();
-  });
+  await ctr.stdout();
+  const id = await ctr
+    .file("/app/app/build/outputs/apk/debug/app-debug.apk")
+    .id();
   return id;
 }
 
@@ -140,52 +130,46 @@ export async function assembleRelease(
   src: string | Directory | undefined = ".",
   signed = false
 ): Promise<File | string> {
-  let id = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const ctr = client
-      .pipeline(Job.assembleRelease)
-      .container()
-      .from("ghcr.io/fluentci-io/android:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("android-gradle-cache")
-      )
-      .withMountedCache("/app/build", client.cacheVolume("android-build"))
-      .withMountedCache(
-        "/root/android-sdk/platforms",
-        client.cacheVolume("sdk-platforms")
-      )
-      .withMountedCache(
-        "/root/android-sdk/system-images",
-        client.cacheVolume("sdk-system-images")
-      )
-      .withMountedCache(
-        "/root/android-sdk/build-tools",
-        client.cacheVolume("sdk-build-tools")
-      )
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"]);
+  const ctr = dag
+    .pipeline(Job.assembleRelease)
+    .container()
+    .from("ghcr.io/fluentci-io/android:latest")
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      dag.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      dag.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      dag.cacheVolume("sdk-build-tools")
+    )
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"]);
 
-    await ctr.stdout();
-    id = await ctr
-      .file(
-        `/app/app/build/outputs/apk/release/app-release${
-          signed ? "" : "-unsigned"
-        }.apk`
-      )
-      .id();
-  });
+  await ctr.stdout();
+  const id = await ctr
+    .file(
+      `/app/app/build/outputs/apk/release/app-release${
+        signed ? "" : "-unsigned"
+      }.apk`
+    )
+    .id();
   return id;
 }
 
@@ -198,47 +182,41 @@ export async function assembleRelease(
 export async function bundleRelease(
   src: string | Directory | undefined = "."
 ): Promise<File | string> {
-  let id = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const ctr = client
-      .pipeline(Job.bundleRelease)
-      .container()
-      .from("ghcr.io/fluentci-io/android:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("android-gradle-cache")
-      )
-      .withMountedCache("/app/build", client.cacheVolume("android-build"))
-      .withMountedCache(
-        "/root/android-sdk/platforms",
-        client.cacheVolume("sdk-platforms")
-      )
-      .withMountedCache(
-        "/root/android-sdk/system-images",
-        client.cacheVolume("sdk-system-images")
-      )
-      .withMountedCache(
-        "/root/android-sdk/build-tools",
-        client.cacheVolume("sdk-build-tools")
-      )
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"]);
-    await ctr.stdout();
-    id = await ctr
-      .file("/app/app/build/outputs/bundle/release/app-release.aab")
-      .id();
-  });
+  const ctr = dag
+    .pipeline(Job.bundleRelease)
+    .container()
+    .from("ghcr.io/fluentci-io/android:latest")
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      dag.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      dag.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      dag.cacheVolume("sdk-build-tools")
+    )
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"]);
+  await ctr.stdout();
+  const id = await ctr
+    .file("/app/app/build/outputs/bundle/release/app-release.aab")
+    .id();
   return id;
 }
 
@@ -251,49 +229,43 @@ export async function bundleRelease(
 export async function debugTests(
   src: string | Directory | undefined = "."
 ): Promise<string> {
-  let result = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const ctr = client
-      .pipeline(Job.debugTests)
-      .container()
-      .from("ghcr.io/fluentci-io/android:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("android-gradle-cache")
-      )
-      .withMountedCache("/app/build", client.cacheVolume("android-build"))
-      .withMountedCache(
-        "/root/android-sdk/platforms",
-        client.cacheVolume("sdk-platforms")
-      )
-      .withMountedCache(
-        "/root/android-sdk/system-images",
-        client.cacheVolume("sdk-system-images")
-      )
-      .withMountedCache(
-        "/root/android-sdk/build-tools",
-        client.cacheVolume("sdk-build-tools")
-      )
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-      .withExec(["chmod", "+x", "./gradlew"])
-      .withExec([
-        "sh",
-        "-c",
-        "devbox run -- ./gradlew -Pci --console=plain :app:testDebug",
-      ]);
+  const ctr = dag
+    .pipeline(Job.debugTests)
+    .container()
+    .from("ghcr.io/fluentci-io/android:latest")
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      dag.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      dag.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      dag.cacheVolume("sdk-build-tools")
+    )
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["chmod", "+x", "./gradlew"])
+    .withExec([
+      "sh",
+      "-c",
+      "devbox run -- ./gradlew -Pci --console=plain :app:testDebug",
+    ]);
 
-    result = await ctr.stdout();
-  });
+  const result = await ctr.stdout();
   return result;
 }
 
@@ -306,45 +278,39 @@ export async function debugTests(
 export async function dev(
   src: string | Directory | undefined = "."
 ): Promise<Container | string> {
-  let id = "";
-  await connect(async (client: Client) => {
-    const context = getDirectory(client, src);
+  const context = await getDirectory(dag, src);
 
-    const ctr = client
-      .pipeline(Job.bundleRelease)
-      .container()
-      .from("ghcr.io/fluentci-io/android:latest")
-      .withExec(["mv", "/nix/store", "/nix/store-orig"])
-      .withMountedCache("/nix/store", client.cacheVolume("nix-cache"))
-      .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
-      .withMountedCache("/app/.gradle", client.cacheVolume("android-gradle"))
-      .withMountedCache(
-        "/root/.gradle",
-        client.cacheVolume("android-gradle-cache")
-      )
-      .withMountedCache("/app/build", client.cacheVolume("android-build"))
-      .withMountedCache(
-        "/root/android-sdk/platforms",
-        client.cacheVolume("sdk-platforms")
-      )
-      .withMountedCache(
-        "/root/android-sdk/system-images",
-        client.cacheVolume("sdk-system-images")
-      )
-      .withMountedCache(
-        "/root/android-sdk/build-tools",
-        client.cacheVolume("sdk-build-tools")
-      )
-      .withDirectory("/app", context, {
-        exclude,
-      })
-      .withWorkdir("/app")
-      .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-      .withExec(["chmod", "+x", "./gradlew"]);
+  const ctr = dag
+    .pipeline(Job.bundleRelease)
+    .container()
+    .from("ghcr.io/fluentci-io/android:latest")
+    .withExec(["mv", "/nix/store", "/nix/store-orig"])
+    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
+    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
+    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
+    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
+    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
+    .withMountedCache(
+      "/root/android-sdk/platforms",
+      dag.cacheVolume("sdk-platforms")
+    )
+    .withMountedCache(
+      "/root/android-sdk/system-images",
+      dag.cacheVolume("sdk-system-images")
+    )
+    .withMountedCache(
+      "/root/android-sdk/build-tools",
+      dag.cacheVolume("sdk-build-tools")
+    )
+    .withDirectory("/app", context, {
+      exclude,
+    })
+    .withWorkdir("/app")
+    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
+    .withExec(["chmod", "+x", "./gradlew"]);
 
-    await ctr.stdout();
-    id = await ctr.id();
-  });
+  await ctr.stdout();
+  const id = await ctr.id();
   return id;
 }
 

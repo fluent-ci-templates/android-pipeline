@@ -18,8 +18,8 @@ jobs:
           dagger version
       - name: Run Dagger Pipelines
         run: |
-          dagger query --doc assemble_release.gql
-          dagger query --doc bundle_release.gql
-          dagger query --doc assemble_debug.gql
-          dagger query --doc lint_debug.gql
+          dagger call assemble-release --src .
+          dagger call bundle-release --src .
+          dagger call assemble-debug --src .
+          dagger call lint-debug --src .
         working-directory: example
