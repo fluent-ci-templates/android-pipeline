@@ -75,7 +75,7 @@ debugTests(
 You can also use this pipeline programmatically:
 
 ```ts
-import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.9.1/mod.ts";
+import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.9.2/mod.ts";
 
 await lintDebug();
 await debugTests();
