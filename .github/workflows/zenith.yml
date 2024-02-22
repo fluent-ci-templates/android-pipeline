@@ -18,8 +18,8 @@ jobs:
           dagger version
       - name: Run Dagger Pipelines
         run: |
-          dagger download assemble-release --src .
-          dagger download bundle-release --src .
-          dagger download assemble-debug --src .
+          dagger call assemble-release --src . --output=.
+          dagger call bundle-release --src . --output=.
+          dagger call assemble-debug --src . --output=.
           dagger call lint-debug --src .
         working-directory: example
