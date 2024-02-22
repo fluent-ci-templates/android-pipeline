@@ -1,3 +1,8 @@
+/**
+ * @module android
+ * @description This module provides a set of functions for building Android applications.
+ */
+
 import { Directory, File, Container } from "../../deps.ts";
 import { dag } from "../../sdk/client.gen.ts";
 import { getDirectory } from "./lib.ts";
@@ -35,9 +40,6 @@ export async function lintDebug(
     .pipeline(Job.lintDebug)
     .container()
     .from("ghcr.io/fluentci-io/android:latest")
-    .withExec(["mv", "/nix/store", "/nix/store-orig"])
-    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
-    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -86,9 +88,6 @@ export async function assembleDebug(
     .pipeline(Job.assembleDebug)
     .container()
     .from("ghcr.io/fluentci-io/android:latest")
-    .withExec(["mv", "/nix/store", "/nix/store-orig"])
-    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
-    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -136,9 +135,6 @@ export async function assembleRelease(
     .pipeline(Job.assembleRelease)
     .container()
     .from("ghcr.io/fluentci-io/android:latest")
-    .withExec(["mv", "/nix/store", "/nix/store-orig"])
-    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
-    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -188,9 +184,6 @@ export async function bundleRelease(
     .pipeline(Job.bundleRelease)
     .container()
     .from("ghcr.io/fluentci-io/android:latest")
-    .withExec(["mv", "/nix/store", "/nix/store-orig"])
-    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
-    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -235,9 +228,6 @@ export async function debugTests(
     .pipeline(Job.debugTests)
     .container()
     .from("ghcr.io/fluentci-io/android:latest")
-    .withExec(["mv", "/nix/store", "/nix/store-orig"])
-    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
-    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -284,9 +274,6 @@ export async function dev(
     .pipeline(Job.bundleRelease)
     .container()
     .from("ghcr.io/fluentci-io/android:latest")
-    .withExec(["mv", "/nix/store", "/nix/store-orig"])
-    .withMountedCache("/nix/store", dag.cacheVolume("nix-cache"))
-    .withExec(["sh", "-c", "cp -r /nix/store-orig/* /nix/store/"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
