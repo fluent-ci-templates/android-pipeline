@@ -33,15 +33,22 @@ Now you can run the pipeline with:
 fluentci run .
 ```
 
-## Dagger Module
+## 🧩 Dagger Module
 
 Use as a [Dagger](https://dagger.io) module:
 
 ```bash
-dagger mod install github.com/fluent-ci-templates/android-pipeline@mod
+dagger install github.com/fluent-ci-templates/android-pipeline@main
 ```
 
-## Jobs
+Call a function from the module:
+
+```bash
+dagger call assemble-release --src .
+dagger call bundle-release --src .
+```
+
+## ✨ Jobs
 
 | Job            | Description           |
 | -------------- | --------------------- |
@@ -74,7 +81,7 @@ debugTests(
 ): Promise<string>
 ```
 
-## Programmatic usage
+## 👨‍💻 Programmatic usage
 
 You can also use this pipeline programmatically:
 
