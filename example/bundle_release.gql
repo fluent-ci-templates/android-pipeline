@@ -1,7 +1,0 @@
-{
-  android {
-    bundleRelease(src: ".") {
-      id
-    }
-  }
-}

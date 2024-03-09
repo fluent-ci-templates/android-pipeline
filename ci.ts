@@ -1,8 +1,4 @@
-import {
-  lintDebug,
-  assembleDebug,
-  debugTests,
-} from "https://pkg.fluentci.io/android_pipeline@v0.9.3/mod.ts";
+import { lintDebug, assembleDebug, debugTests } from "jsr:@fluentci/android";
 
 await lintDebug();
 await debugTests();

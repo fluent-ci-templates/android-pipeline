@@ -2,8 +2,12 @@
 
 [![fluentci pipeline](https://img.shields.io/badge/dynamic/json?label=pkg.fluentci.io&labelColor=%23000&color=%23460cf1&url=https%3A%2F%2Fapi.fluentci.io%2Fv1%2Fpipeline%2Fandroid_pipeline&query=%24.version)](https://pkg.fluentci.io/android_pipeline)
 [![deno module](https://shield.deno.dev/x/android_pipeline)](https://deno.land/x/android_pipeline)
-![deno compatibility](https://shield.deno.dev/deno/^1.37)
+![deno compatibility](https://shield.deno.dev/deno/^1.41)
+[![dagger-min-version](https://img.shields.io/badge/dagger-v0.10.0-blue?color=3D66FF&labelColor=000000)](https://dagger.io)
+[![](https://jsr.io/badges/@fluentci/android)](https://jsr.io/@fluentci/android)
 [![](https://img.shields.io/codecov/c/gh/fluent-ci-templates/android-pipeline)](https://codecov.io/gh/fluent-ci-templates/android-pipeline)
+[![ci](https://github.com/fluent-ci-templates/android-pipeline/actions/workflows/ci.yml/badge.svg)](https://github.com/fluent-ci-templates/android-pipeline/actions/workflows/ci.yml)
+
 
 A ready-to-use CI/CD Pipeline for your Android projects.
 
@@ -75,7 +79,7 @@ debugTests(
 You can also use this pipeline programmatically:
 
 ```ts
-import { lintDebug, assembleDebug, debugTests } from "https://pkg.fluentci.io/android_pipeline@v0.9.3/mod.ts";
+import { lintDebug, assembleDebug, debugTests } from "jsr:@fluentci/android";
 
 await lintDebug();
 await debugTests();
