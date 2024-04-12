@@ -68,7 +68,7 @@ pub fn setup_android_sdk() -> Result<(), Error> {
 
     dag().set_envs(vec![(
         "PATH".into(),
-        format!("{}:$ANDROID_HOME/cmdline-tools/latest/bin", path),
+        format!("{}:{}/android-sdk/cmdline-tools/latest/bin", path, home),
     )])?;
 
     dag()
