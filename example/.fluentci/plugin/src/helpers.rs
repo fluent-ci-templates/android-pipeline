@@ -66,6 +66,15 @@ pub fn setup_android_sdk() -> Result<(), Error> {
         ("ANDROID_SDK_ROOT".into(), format!("{}/android-sdk", home)),
     ])?;
 
+    let sdk_dir_ok = dag()
+        .directory(".")?
+        .with_exec(vec!["[ ! -d $ANDROID_HOME ] || echo OK"])?
+        .stdout()?;
+
+    if sdk_dir_ok.contains("OK") {
+        return Ok(());
+    }
+
     dag().set_envs(vec![(
         "PATH".into(),
         format!("{}:{}/android-sdk/cmdline-tools/latest/bin", path, home),
