@@ -61,10 +61,10 @@ pub fn setup_android_sdk() -> Result<(), Error> {
 
     let home = dag().get_env("HOME").unwrap_or("/root".into());
 
-    dag().set_envs(vec![(
-        "ANDROID_HOME".into(),
-        format!("{}/android-sdk", home),
-    )])?;
+    dag().set_envs(vec![
+        ("ANDROID_HOME".into(), format!("{}/android-sdk", home)),
+        ("ANDROID_SDK_ROOT".into(), format!("{}/android-sdk", home)),
+    ])?;
 
     dag().set_envs(vec![(
         "PATH".into(),
