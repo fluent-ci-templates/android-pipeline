@@ -84,8 +84,8 @@ pub fn setup_android_sdk() -> Result<(), Error> {
         ])?
         .with_exec(vec![
             "sdkmanager",
-            &format!("platforms;android-{}", android_platform_version),
-            &format!("build-tools;{}", android_build_tools_version),
+            &format!("\"platforms;android-{}\"", android_platform_version),
+            &format!("\"build-tools;{}\"", android_build_tools_version),
         ])?
         .with_exec(vec![
             "yes | sdkmanager --licenses",
