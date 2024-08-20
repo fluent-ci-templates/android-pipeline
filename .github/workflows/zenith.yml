@@ -19,6 +19,4 @@ jobs:
       - name: Run Dagger Pipelines
         run: |
           dagger call -vvv assemble-release --src . --output=.
-          dagger call -vvv bundle-release --src . --output=.
-          dagger call -vvv assemble-debug --src . --output=.
         working-directory: example
