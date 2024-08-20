@@ -41,21 +41,6 @@ export async function lintDebug(
     .from("denoland/deno:debian-1.45.5")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "curl"])
-    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
-    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
-    .withMountedCache(
-      "/root/android-sdk/platforms",
-      dag.cacheVolume("sdk-platforms")
-    )
-    .withMountedCache(
-      "/root/android-sdk/system-images",
-      dag.cacheVolume("sdk-system-images")
-    )
-    .withMountedCache(
-      "/root/android-sdk/build-tools",
-      dag.cacheVolume("sdk-build-tools")
-    )
     .withDirectory("/app", context, {
       exclude,
     })
@@ -98,21 +83,6 @@ export async function assembleDebug(
     .from("denoland/deno:debian-1.45.5")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "curl"])
-    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
-    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
-    .withMountedCache(
-      "/root/android-sdk/platforms",
-      dag.cacheVolume("sdk-platforms")
-    )
-    .withMountedCache(
-      "/root/android-sdk/system-images",
-      dag.cacheVolume("sdk-system-images")
-    )
-    .withMountedCache(
-      "/root/android-sdk/build-tools",
-      dag.cacheVolume("sdk-build-tools")
-    )
     .withDirectory("/app", context, {
       exclude,
     })
@@ -158,21 +128,6 @@ export async function assembleRelease(
     .from("denoland/deno:debian-1.45.5")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "curl"])
-    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
-    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
-    .withMountedCache(
-      "/root/android-sdk/platforms",
-      dag.cacheVolume("sdk-platforms")
-    )
-    .withMountedCache(
-      "/root/android-sdk/system-images",
-      dag.cacheVolume("sdk-system-images")
-    )
-    .withMountedCache(
-      "/root/android-sdk/build-tools",
-      dag.cacheVolume("sdk-build-tools")
-    )
     .withDirectory("/app", context, {
       exclude,
     })
@@ -221,21 +176,6 @@ export async function bundleRelease(
     .from("denoland/deno:debian-1.45.5")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "curl"])
-    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
-    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
-    .withMountedCache(
-      "/root/android-sdk/platforms",
-      dag.cacheVolume("sdk-platforms")
-    )
-    .withMountedCache(
-      "/root/android-sdk/system-images",
-      dag.cacheVolume("sdk-system-images")
-    )
-    .withMountedCache(
-      "/root/android-sdk/build-tools",
-      dag.cacheVolume("sdk-build-tools")
-    )
     .withDirectory("/app", context, {
       exclude,
     })
@@ -278,21 +218,6 @@ export async function debugTests(
     .from("denoland/deno:debian-1.45.5")
     .withExec(["apt-get", "update"])
     .withExec(["apt-get", "install", "-y", "curl"])
-    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
-    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
-    .withMountedCache(
-      "/root/android-sdk/platforms",
-      dag.cacheVolume("sdk-platforms")
-    )
-    .withMountedCache(
-      "/root/android-sdk/system-images",
-      dag.cacheVolume("sdk-system-images")
-    )
-    .withMountedCache(
-      "/root/android-sdk/build-tools",
-      dag.cacheVolume("sdk-build-tools")
-    )
     .withDirectory("/app", context, {
       exclude,
     })
