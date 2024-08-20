@@ -18,8 +18,8 @@ jobs:
           dagger version
       - name: Run Dagger Pipelines
         run: |
-          dagger call assemble-release --src . --output=.
-          dagger call bundle-release --src . --output=.
-          dagger call assemble-debug --src . --output=.
-          dagger call lint-debug --src .
+          dagger call -vvv assemble-release --src . --output=.
+          dagger call -vvv bundle-release --src . --output=.
+          dagger call -vvv assemble-debug --src . --output=.
+          dagger call -vvv lint-debug --src .
         working-directory: example

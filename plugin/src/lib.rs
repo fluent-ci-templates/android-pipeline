@@ -20,12 +20,7 @@ pub fn assemble_release(args: String) -> FnResult<String> {
 
     let stdout = dag()
         .mise()?
-        .with_exec(vec![
-            r#"
-            eval "$(devbox global shellenv --recompute)"
-            ./gradlew assembleRelease"#,
-            &args,
-        ])?
+        .with_exec(vec!["./gradlew assembleRelease", &args])?
         .stdout()?;
     Ok(stdout)
 }

@@ -12,7 +12,6 @@ export enum Job {
   assembleRelease = "assembleRelease",
   bundleRelease = "bundleRelease",
   debugTests = "debugTests",
-  dev = "dev",
 }
 
 export const exclude = [
@@ -39,7 +38,9 @@ export async function lintDebug(
   const ctr = dag
     .pipeline(Job.lintDebug)
     .container()
-    .from("ghcr.io/fluentci-io/android:latest")
+    .from("denoland/deno:debian-1.45.5")
+    .withExec(["apt-get", "update"])
+    .withExec(["apt-get", "install", "-y", "curl"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -59,15 +60,21 @@ export async function lintDebug(
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "ls -ltr /nix"])
-    .withExec(["nix", "--version"])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
-    ]);
+    .withExec(
+      [
+        "deno",
+        "run",
+        "-A",
+        "https://cli.fluentci.io",
+        "run",
+        "--wasm",
+        "android",
+        "lint_debug",
+      ],
+      {
+        skipEntrypoint: true,
+      }
+    );
 
   return ctr.stdout();
 }
@@ -88,7 +95,9 @@ export async function assembleDebug(
   const ctr = dag
     .pipeline(Job.assembleDebug)
     .container()
-    .from("ghcr.io/fluentci-io/android:latest")
+    .from("denoland/deno:debian-1.45.5")
+    .withExec(["apt-get", "update"])
+    .withExec(["apt-get", "install", "-y", "curl"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -108,9 +117,21 @@ export async function assembleDebug(
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "devbox run -- ./gradlew assembleDebug"]);
+    .withExec(
+      [
+        "deno",
+        "run",
+        "-A",
+        "https://cli.fluentci.io",
+        "run",
+        "--wasm",
+        "android",
+        "assemble_debug",
+      ],
+      {
+        skipEntrypoint: true,
+      }
+    );
 
   await ctr.stdout();
   return ctr.file("/app/app/build/outputs/apk/debug/app-debug.apk").id();
@@ -134,7 +155,9 @@ export async function assembleRelease(
   const ctr = dag
     .pipeline(Job.assembleRelease)
     .container()
-    .from("ghcr.io/fluentci-io/android:latest")
+    .from("denoland/deno:debian-1.45.5")
+    .withExec(["apt-get", "update"])
+    .withExec(["apt-get", "install", "-y", "curl"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -154,11 +177,22 @@ export async function assembleRelease(
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "devbox run -- ./gradlew assembleRelease"]);
+    .withExec(
+      [
+        "deno",
+        "run",
+        "-A",
+        "https://cli.fluentci.io",
+        "run",
+        "--wasm",
+        "android",
+        "assemble_release",
+      ],
+      { skipEntrypoint: true }
+    );
 
   await ctr.stdout();
+
   return ctr
     .file(
       `/app/app/build/outputs/apk/release/app-release${
@@ -184,7 +218,9 @@ export async function bundleRelease(
   const ctr = dag
     .pipeline(Job.bundleRelease)
     .container()
-    .from("ghcr.io/fluentci-io/android:latest")
+    .from("denoland/deno:debian-1.45.5")
+    .withExec(["apt-get", "update"])
+    .withExec(["apt-get", "install", "-y", "curl"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -204,9 +240,21 @@ export async function bundleRelease(
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec(["sh", "-c", "devbox run -- ./gradlew bundleRelease"]);
+    .withExec(
+      [
+        "deno",
+        "run",
+        "-A",
+        "https://cli.fluentci.io",
+        "run",
+        "--wasm",
+        "android",
+        "bundle_release",
+      ],
+      {
+        skipEntrypoint: true,
+      }
+    );
   await ctr.stdout();
   return ctr.file("/app/app/build/outputs/bundle/release/app-release.aab").id();
 }
@@ -227,7 +275,9 @@ export async function debugTests(
   const ctr = dag
     .pipeline(Job.debugTests)
     .container()
-    .from("ghcr.io/fluentci-io/android:latest")
+    .from("denoland/deno:debian-1.45.5")
+    .withExec(["apt-get", "update"])
+    .withExec(["apt-get", "install", "-y", "curl"])
     .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
     .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
     .withMountedCache("/app/build", dag.cacheVolume("android-build"))
@@ -247,58 +297,23 @@ export async function debugTests(
       exclude,
     })
     .withWorkdir("/app")
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-    .withExec(["chmod", "+x", "./gradlew"])
-    .withExec([
-      "sh",
-      "-c",
-      "devbox run -- ./gradlew -Pci --console=plain :app:testDebug",
-    ]);
+    .withExec(
+      [
+        "deno",
+        "run",
+        "-A",
+        "https://cli.fluentci.io",
+        "run",
+        "--wasm",
+        "android",
+        "debug_tests",
+      ],
+      {
+        skipEntrypoint: true,
+      }
+    );
 
   return ctr.stdout();
-}
-
-/**
- * Return a Container with Android SDK and Nix installed
- *
- * @function
- * @description Return a Container with Android SDK and Nix installed
- * @param {string | Directory | undefined} src
- * @returns {Promise<Container | string>}
- */
-export async function dev(
-  src: string | Directory | undefined = "."
-): Promise<Container | string> {
-  const context = await getDirectory(src);
-
-  const ctr = dag
-    .pipeline(Job.bundleRelease)
-    .container()
-    .from("ghcr.io/fluentci-io/android:latest")
-    .withMountedCache("/app/.gradle", dag.cacheVolume("android-gradle"))
-    .withMountedCache("/root/.gradle", dag.cacheVolume("android-gradle-cache"))
-    .withMountedCache("/app/build", dag.cacheVolume("android-build"))
-    .withMountedCache(
-      "/root/android-sdk/platforms",
-      dag.cacheVolume("sdk-platforms")
-    )
-    .withMountedCache(
-      "/root/android-sdk/system-images",
-      dag.cacheVolume("sdk-system-images")
-    )
-    .withMountedCache(
-      "/root/android-sdk/build-tools",
-      dag.cacheVolume("sdk-build-tools")
-    )
-    .withDirectory("/app", context, {
-      exclude,
-    })
-    .withWorkdir("/app")
-    .withExec(["sh", "-c", "yes | sdkmanager --licenses"])
-    .withExec(["chmod", "+x", "./gradlew"]);
-
-  await ctr.stdout();
-  return ctr.id();
 }
 
 export type JobExec = (
@@ -311,7 +326,6 @@ export const runnableJobs: Record<Job, JobExec> = {
   [Job.assembleRelease]: assembleRelease,
   [Job.bundleRelease]: bundleRelease,
   [Job.debugTests]: debugTests,
-  [Job.dev]: dev,
 };
 
 export const jobDescriptions: Record<Job, string> = {
@@ -320,5 +334,4 @@ export const jobDescriptions: Record<Job, string> = {
   [Job.assembleRelease]: "Assembles release apk",
   [Job.bundleRelease]: "Bundles release apk",
   [Job.debugTests]: "Runs debug tests",
-  [Job.dev]: "Returns a Container with Android SDK and Nix installed",
 };

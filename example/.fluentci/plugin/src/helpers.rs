@@ -86,7 +86,7 @@ pub fn setup_android_sdk() -> Result<(), Error> {
 
     dag()
         .pkgx()?
-        .with_packages(vec!["curl", "wget", "unzip", "openjdk.org"])?
+        .with_packages(vec!["curl", "wget", "unzip"])?
         .with_exec(vec![
             &format!("mkdir -p $ANDROID_HOME && wget --output-document=$ANDROID_HOME/cmdline-tools.zip https://dl.google.com/android/repository/commandlinetools-{}-{}_latest.zip", os, android_sdk_tools_version)])?
         .with_exec(vec!["cd $ANDROID_HOME && rm -rf cmdline-tools && unzip -d cmdline-tools cmdline-tools.zip && mv cmdline-tools/cmdline-tools cmdline-tools/latest

@@ -4,5 +4,4 @@ export {
   bundleRelease,
   debugTests,
   lintDebug,
-  dev,
 } from "./jobs.ts";
