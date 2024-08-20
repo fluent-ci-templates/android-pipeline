@@ -19,7 +19,7 @@ pub fn assemble_release(args: String) -> FnResult<String> {
     setup_android_sdk()?;
 
     let stdout = dag()
-        .devbox()?
+        .mise()?
         .with_exec(vec![
             r#"
             eval "$(devbox global shellenv --recompute)"
@@ -36,13 +36,8 @@ pub fn assemble_debug(args: String) -> FnResult<String> {
     setup_android_sdk()?;
 
     let stdout = dag()
-        .devbox()?
-        .with_exec(vec![
-            r#"
-            eval "$(devbox global shellenv --recompute)"
-            ./gradlew assembleDebug"#,
-            &args,
-        ])?
+        .mise()?
+        .with_exec(vec!["./gradlew assembleDebug", &args])?
         .stdout()?;
     Ok(stdout)
 }
@@ -53,11 +48,9 @@ pub fn lint_debug(args: String) -> FnResult<String> {
     setup_android_sdk()?;
 
     let stdout = dag()
-        .devbox()?
+        .mise()?
         .with_exec(vec![
-            r#"
-            eval "$(devbox global shellenv --recompute)"
-            ./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint"#,
+            "./gradlew -Pci --console=plain :app:lintDebug -PbuildDir=lint",
             &args,
         ])?
         .stdout()?;
@@ -70,13 +63,8 @@ pub fn debug_tests(args: String) -> FnResult<String> {
     setup_android_sdk()?;
 
     let stdout = dag()
-        .devbox()?
-        .with_exec(vec![
-            r#"
-            eval "$(devbox global shellenv --recompute)"
-            ./gradlew -Pci --console=plain :app:testDebug"#,
-            &args,
-        ])?
+        .mise()?
+        .with_exec(vec!["./gradlew -Pci --console=plain :app:testDebug", &args])?
         .stdout()?;
     Ok(stdout)
 }
@@ -87,13 +75,8 @@ pub fn bundle_release(args: String) -> FnResult<String> {
     setup_android_sdk()?;
 
     let stdout = dag()
-        .devbox()?
-        .with_exec(vec![
-            r#"
-            eval "$(devbox global shellenv --recompute)"
-            ./gradlew bundleRelease"#,
-            &args,
-        ])?
+        .mise()?
+        .with_exec(vec!["./gradlew bundleRelease", &args])?
         .stdout()?;
     Ok(stdout)
 }
