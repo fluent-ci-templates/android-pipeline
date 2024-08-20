@@ -1,6 +1,6 @@
 {
   "name": "@fluentci/android",
-  "version": "0.10.0",
+  "version": "0.12.0",
   "exports": "./mod.ts",
   "importMap": "import_map.json",
   "tasks": {
