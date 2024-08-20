@@ -3,8 +3,8 @@
  * @description This module provides a set of functions for building Android applications.
  */
 
-import { dag, Directory, File, Container } from "../../deps.ts";
-import { getDirectory } from "./lib.ts";
+import { dag, type Directory, type File, type Container } from "../deps.ts";
+import { getDirectory } from "./helpers.ts";
 
 export enum Job {
   lintDebug = "lintDebug",
